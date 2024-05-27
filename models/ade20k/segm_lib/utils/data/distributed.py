@@ -33,7 +33,8 @@ class DistributedSampler(Sampler):
         self.epoch = 0
         self.num_samples = int(math.ceil(len(self.dataset) * 1.0 / self.num_replicas))
         self.total_size = self.num_samples * self.num_replicas
-
+        print(f"num_samples: {self.num_samples}, total_size: {self.total_size}")
+        
     def __iter__(self):
         # deterministically shuffle based on epoch
         g = torch.Generator()

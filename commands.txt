@@ -1,0 +1,5 @@
+python3 bin/gen_mask_dataset.py $(pwd)/configs/data_gen/random_thin_512.yaml my_dataset/val_source/ my_dataset/val/random_thin_512.yaml --ext png
+
+python3 bin/gen_mask_dataset.py $(pwd)/configs/data_gen/random_thin_512.yaml my_dataset/visual_test_source/ my_dataset/visual_test/random_thin_512/ --ext png
+
+python3 bin/gen_mask_dataset.py $(pwd)/configs/data_gen/random_thin_512.yaml my_dataset/eval_source/ my_dataset/eval/random_thin_512/ --ext png

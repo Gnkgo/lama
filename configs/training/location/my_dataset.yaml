@@ -1,0 +1,3 @@
+data_root_dir: /cluster/home/jbrodbec/lama/my_dataset/
+out_root_dir: /cluster/home/jbrodbec/lama/experiments/
+tb_dir: /cluster/home/jbrodbec/lama/tb_logs/
