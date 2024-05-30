@@ -136,7 +136,7 @@ unzip LaMa_test_images.zip
     image2.png
     ```
 
-2) Specify `image_suffix`, e.g. `.png` or `.jpg` or `_input.jpg` in `configs/prediction/default.yaml`.
+2) Specify `image_suffix`, e.g. `.png` or `.png` or `_input.png` in `configs/prediction/default.yaml`.
 
 </details>
 
@@ -291,13 +291,13 @@ On the host machine:
 
     # Suppose, we want to evaluate and pick best models 
     # on 512x512 val dataset  with thick/thin/medium masks 
-    # And your images have .jpg extention:
+    # And your images have .png extention:
 
     python3 bin/gen_mask_dataset.py \
     $(pwd)/configs/data_gen/random_<size>_512.yaml \ # thick, thin, medium
     my_dataset/val_source/ \
     my_dataset/val/random_<size>_512.yaml \# thick, thin, medium
-    --ext jpg
+    --ext png
 
     # So the mask generator will: 
     # 1. resize and crop val images and save them as .png
@@ -316,7 +316,7 @@ On the host machine:
     $(pwd)/configs/data_gen/random_<size>_512.yaml \  #thick, thin, medium
     my_dataset/visual_test_source/ \
     my_dataset/visual_test/random_<size>_512/ \ #thick, thin, medium
-    --ext jpg
+    --ext png
     
 
     ls my_dataset/visual_test/random_thick_512/
@@ -332,7 +332,7 @@ On the host machine:
     $(pwd)/configs/data_gen/random_<size>_512.yaml \  #thick, thin, medium
     my_dataset/eval_source/ \
     my_dataset/eval/random_<size>_512/ \ #thick, thin, medium
-    --ext jpg
+    --ext png
     
 
 

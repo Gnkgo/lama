@@ -18,8 +18,8 @@ BASEDIR="$(dirname $0)"
 #    model.path="simple_pix2pix2_gap_sdpl_novgg_large_b18_ffc075_batch8x15/saved_checkpoint/r.suvorov_2021-04-30_14-41-12_train_simple_pix2pix2_gap_sdpl_novgg_large_b18_ffc075_batch8x15_epoch22-step-574999" \
 #    indir="/data/inpainting/mask_analysis/generated" \
 #    outdir="/data/inpainting/mask_analysis/predicted" \
-#    dataset.img_suffix=.jpg \
-#    +out_ext=.jpg
+#    dataset.img_suffix=.png \
+#    +out_ext=.png
 
 # analyze good and bad samples
 "$BASEDIR/../analyze_errors.py" \
