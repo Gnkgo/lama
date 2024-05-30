@@ -3,4 +3,4 @@ evaluator_kwargs:
 
 dataset_kwargs:
   img_suffix: .png
-  inpainted_suffix: .jpg
+  inpainted_suffix: .png

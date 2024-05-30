@@ -24,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 
 class InpaintingTrainDataset(Dataset):
     def __init__(self, indir, mask_generator, transform):
-        self.in_files = list(glob.glob(os.path.join(indir, '**', '*.jpg'), recursive=True))
+        self.in_files = list(glob.glob(os.path.join(indir, '**', '*.png'), recursive=True))
         self.mask_generator = mask_generator
         self.transform = transform
         self.iter_i = 0
@@ -47,7 +47,7 @@ class InpaintingTrainDataset(Dataset):
 
 class InpaintingTrainWebDataset(IterableDataset):
     def __init__(self, indir, mask_generator, transform, shuffle_buffer=200):
-        self.impl = webdataset.Dataset(indir).shuffle(shuffle_buffer).decode('rgb').to_tuple('jpg')
+        self.impl = webdataset.Dataset(indir).shuffle(shuffle_buffer).decode('rgb').to_tuple('png')
         self.mask_generator = mask_generator
         self.transform = transform
 
@@ -69,7 +69,7 @@ class ImgSegmentationDataset(Dataset):
         self.transform = transform
         self.out_size = out_size
         self.semantic_seg_n_classes = semantic_seg_n_classes
-        self.in_files = list(glob.glob(os.path.join(indir, '**', '*.jpg'), recursive=True))
+        self.in_files = list(glob.glob(os.path.join(indir, '**', '*.png'), recursive=True))
 
     def __len__(self):
         return len(self.in_files)
@@ -90,7 +90,7 @@ class ImgSegmentationDataset(Dataset):
         return result
 
     def load_semantic_segm(self, img_path):
-        segm_path = img_path.replace(self.indir, self.segm_indir).replace(".jpg", ".png")
+        segm_path = img_path.replace(self.indir, self.segm_indir).replace(".png", ".png")
         mask = cv2.imread(segm_path, cv2.IMREAD_GRAYSCALE)
         mask = cv2.resize(mask, (self.out_size, self.out_size))
         tensor = torch.from_numpy(np.clip(mask.astype(int)-1, 0, None))

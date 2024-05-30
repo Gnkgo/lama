@@ -42,7 +42,7 @@ def save_global_samples(global_mask_fnames, mask2real_fname, mask2fake_fname, ou
                                              last_without_mask=True)
         cur_grid = np.clip(cur_grid * 255, 0, 255).astype('uint8')
         cur_grid = cv2.cvtColor(cur_grid, cv2.COLOR_RGB2BGR)
-        cv2.imwrite(os.path.join(out_dir, os.path.splitext(os.path.basename(cur_mask_fname))[0] + '.jpg'),
+        cv2.imwrite(os.path.join(out_dir, os.path.splitext(os.path.basename(cur_mask_fname))[0] + '.png'),
                     cur_grid)
 
 
@@ -69,7 +69,7 @@ def save_samples_by_real(worst_best_by_real, mask2fake_fname, fake_info, out_dir
         cur_grid = np.clip(cur_grid * 255, 0, 255).astype('uint8')
         cur_grid = cv2.cvtColor(cur_grid, cv2.COLOR_RGB2BGR)
         cv2.imwrite(os.path.join(out_dir,
-                                 os.path.splitext(os.path.basename(real_fname))[0] + '.jpg'),
+                                 os.path.splitext(os.path.basename(real_fname))[0] + '.png'),
                     cur_grid)
 
         fig, (ax1, ax2) = plt.subplots(1, 2)

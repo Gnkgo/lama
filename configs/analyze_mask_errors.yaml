@@ -1,6 +1,6 @@
 dataset_kwargs:
-  img_suffix: .jpg
-  inpainted_suffix: .jpg
+  img_suffix: .png
+  inpainted_suffix: .png
 
 take_global_top: 30
 take_worst_best_top: 30

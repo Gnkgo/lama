@@ -125,6 +125,6 @@ if __name__ == '__main__':
     aparser.add_argument('indir', type=str, help='Path to folder with images')
     aparser.add_argument('outdir', type=str, help='Path to folder to store aligned images and masks to')
     aparser.add_argument('--n-jobs', type=int, default=0, help='How many processes to use')
-    aparser.add_argument('--ext', type=str, default='jpg', help='Input image extension')
+    aparser.add_argument('--ext', type=str, default='png', help='Input image extension')
 
     main(aparser.parse_args())

@@ -56,7 +56,7 @@ def scale_image(img, factor, interpolation=cv2.INTER_AREA):
 
 
 class InpaintingDataset(Dataset):
-    def __init__(self, datadir, img_suffix='.jpg', pad_out_to_modulo=None, scale_factor=None):
+    def __init__(self, datadir, img_suffix='.png', pad_out_to_modulo=None, scale_factor=None):
         self.datadir = datadir
         self.mask_filenames = sorted(list(glob.glob(os.path.join(self.datadir, '**', '*mask*.png'), recursive=True)))
         self.img_filenames = [fname.rsplit('_mask', 1)[0] + img_suffix for fname in self.mask_filenames]
@@ -83,7 +83,7 @@ class InpaintingDataset(Dataset):
         return result
 
 class OurInpaintingDataset(Dataset):
-    def __init__(self, datadir, img_suffix='.jpg', pad_out_to_modulo=None, scale_factor=None):
+    def __init__(self, datadir, img_suffix='.png', pad_out_to_modulo=None, scale_factor=None):
         self.datadir = datadir
         self.mask_filenames = sorted(list(glob.glob(os.path.join(self.datadir, 'mask', '**', '*mask*.png'), recursive=True)))
         self.img_filenames = [os.path.join(self.datadir, 'img', os.path.basename(fname.rsplit('-', 1)[0].rsplit('_', 1)[0]) + '.png') for fname in self.mask_filenames]
@@ -108,7 +108,7 @@ class OurInpaintingDataset(Dataset):
         return result
 
 class PrecomputedInpaintingResultsDataset(InpaintingDataset):
-    def __init__(self, datadir, predictdir, inpainted_suffix='_inpainted.jpg', **kwargs):
+    def __init__(self, datadir, predictdir, inpainted_suffix='_inpainted.png', **kwargs):
         super().__init__(datadir, **kwargs)
         if not datadir.endswith('/'):
             datadir += '/'
@@ -143,7 +143,7 @@ class OurPrecomputedInpaintingResultsDataset(OurInpaintingDataset):
         return result
 
 class InpaintingEvalOnlineDataset(Dataset):
-    def __init__(self, indir, mask_generator, img_suffix='.jpg', pad_out_to_modulo=None, scale_factor=None,  **kwargs):
+    def __init__(self, indir, mask_generator, img_suffix='.png', pad_out_to_modulo=None, scale_factor=None,  **kwargs):
         self.indir = indir
         self.mask_generator = mask_generator
         self.img_filenames = sorted(list(glob.glob(os.path.join(self.indir, '**', f'*{img_suffix}' ), recursive=True)))

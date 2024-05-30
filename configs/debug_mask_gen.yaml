@@ -1,4 +1,4 @@
-img_ext: .jpg
+img_ext: .png
 
 gen_kwargs:
   mask_size: 200
