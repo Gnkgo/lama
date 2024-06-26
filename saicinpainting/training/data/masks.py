@@ -3,7 +3,7 @@ import random
 import hashlib
 import logging
 from enum import Enum
-
+import json
 import cv2
 import numpy as np
 
@@ -17,10 +17,12 @@ class DrawMethod(Enum):
     LINE = 'line'
     CIRCLE = 'circle'
     SQUARE = 'square'
+    
+
 
 
 def make_random_irregular_mask(shape, max_angle=4, max_len=60, max_width=20, min_times=0, max_times=10,
-                               draw_method=DrawMethod.LINE):
+                            draw_method=DrawMethod.LINE):
     draw_method = DrawMethod(draw_method)
 
     height, width = shape
@@ -68,7 +70,83 @@ class RandomIrregularMaskGenerator:
                                           max_width=cur_max_width, min_times=self.min_times, max_times=cur_max_times,
                                           draw_method=self.draw_method)
 
+class FixedMaskGenerator:
+    def __init__(self, rectangles=None):
+        """
+        Initializes the mask generator with a set of predefined rectangles.
 
+        Parameters:
+        - rectangles: Filepath to json file to dictionary mapping an index to a list of rectangle specifications.
+                      Each rectangle is specified as (start_x, end_x, start_y, end_y).
+        """
+        try:
+            with open(rectangles, 'r') as file:
+                self.rectangles = json.load(file)
+                #print(f"Loaded {len(self.rectangles)} rectangles")
+                #print(self.rectangles["2636"])
+        except FileNotFoundError:
+            raise ValueError(f"File {rectangles} not found")
+        
+    def add_rectangle(self, index, rectangle):
+        """
+        Adds a rectangle to a specific index.
+
+        Parameters:
+        - index: The index for which the rectangle should be added.
+        - rectangle: The rectangle specification (start_x, start_y, width, height).
+        """
+        if index not in self.rectangles:
+            self.rectangles[index] = []
+        self.rectangles[index].append(rectangle)
+
+    def __call__(self, img, index):
+        """
+        Generates a mask based on the specified index and image shape.
+
+        Parameters:
+        - shape: Tuple (height, width) specifying the size of the mask.
+        - index: The index to retrieve specific rectangle specifications.
+
+        Returns:
+        - A mask array with specified rectangles for the given index.
+        """
+        
+        #print("index: ", index)
+        
+        # print("rectangles: ", self.rectangles)
+        # print("index: ", index)
+        # print("index in rectangles: ", str(index) in self.rectangles)
+        
+        if str(index) in self.rectangles:
+            return make_fixed_rectangle_mask(img.shape[1:], (self.rectangles[str(index)]))
+        else:
+            #print("no index??????")
+            return np.zeros((1, img.shape[1], img.shape[2]), dtype=np.float32)  # Empty mask if no rectangles are defined for the index
+
+
+
+def make_fixed_rectangle_mask(shape, rectangles):
+    """
+    Generate a mask with rectangles placed at specified locations.
+
+    Parameters:
+    - shape: Tuple of (height, width) specifying the mask size.
+    - rectangles: List of tuples, where each tuple contains (start_x, start_y, box_width, box_height)
+                  These specify the top-left corner and size of each rectangle.
+
+    Returns:
+    - A mask array with specified rectangles.
+    """
+    height, width = shape
+    mask = np.zeros((height, width), dtype=np.float32)
+    for rect in rectangles:
+        start_x, end_x, start_y, end_y = rect
+        mask[start_y:end_y, start_x:end_x] = 1
+        
+    #print("mask: ", mask)
+    return mask[None, ...] 
+
+    
 def make_random_rectangle_mask(shape, margin=10, bbox_min_size=30, bbox_max_size=100, min_times=0, max_times=3):
     height, width = shape
     mask = np.zeros((height, width), np.float32)
@@ -325,6 +403,8 @@ def get_mask_generator(kind, kwargs):
         cl = MixedMaskGenerator
     elif kind == "outpainting":
         cl = OutpaintingMaskGenerator
+    elif kind == "fixed":
+        cl = FixedMaskGenerator
     elif kind == "dumb":
         cl = DumbAreaMaskGenerator
     else:

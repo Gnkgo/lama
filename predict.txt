@@ -1,0 +1,1 @@
+python3 bin/predict.py model.path=$(pwd)/experiments/<user>_<date:time>_lama-fourier_/ indir=$(pwd)/places_standard_dataset/evaluation/random_thick_512/ outdir=$(pwd)/prediction model.checkpoint=last.ckpt

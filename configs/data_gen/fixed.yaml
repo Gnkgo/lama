@@ -1,0 +1,13 @@
+generator_kind: fixed
+
+max_masks_per_image: 2
+
+cropping:
+  out_min_size: 512
+  handle_small_mode: upscale
+  out_square_crop: False
+  crop_min_overlap: 0
+
+max_tamper_area: 0.5
+
+

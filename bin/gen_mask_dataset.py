@@ -10,8 +10,10 @@ import numpy as np
 from joblib import Parallel, delayed
 
 from saicinpainting.evaluation.masks.mask import SegmentationMask, propose_random_square_crop
+print("Imported SegmentationMask and propose_random_square_crop successfully")
 from saicinpainting.evaluation.utils import load_yaml, SmallMode
 from saicinpainting.training.data.masks import MixedMaskGenerator
+from saicinpainting.training.data.masks import FixedMaskGenerator
 
 
 class MakeManyMasksWrapper:
@@ -23,14 +25,27 @@ class MakeManyMasksWrapper:
         img = np.transpose(np.array(img), (2, 0, 1))
         return [self.impl(img)[0] for _ in range(self.variants_n)]
 
+class MakeManyMasksWrapperFixed:
+    def __init__(self, impl):
+        self.impl = impl
 
-def process_images(src_images, indir, outdir, config):
+    def get_masks(self, img, index):
+        img = np.transpose(np.array(img), (2, 0, 1))        
+        return [self.impl(img, int(index))[0]]
+
+
+
+    
+    
+def process_images(src_images, indir, outdir, config, rectangles):
     if config.generator_kind == 'segmentation':
         mask_generator = SegmentationMask(**config.mask_generator_kwargs)
     elif config.generator_kind == 'random':
         variants_n = config.mask_generator_kwargs.pop('variants_n', 2)
         mask_generator = MakeManyMasksWrapper(MixedMaskGenerator(**config.mask_generator_kwargs),
                                               variants_n=variants_n)
+    elif config.generator_kind == 'fixed':
+        mask_generator = MakeManyMasksWrapperFixed(FixedMaskGenerator(rectangles=rectangles))
     else:
         raise ValueError(f'Unexpected generator kind: {config.generator_kind}')
 
@@ -59,7 +74,16 @@ def process_images(src_images, indir, outdir, config):
                 image = image.resize(out_size, resample=Image.BICUBIC)
 
             # generate and select masks
-            src_masks = mask_generator.get_masks(image)
+            if config.generator_kind == 'fixed': 
+                index = os.path.basename(infile).split('.')[0]
+                # Extract the image shape and pass to the mask generator
+                #image_shape = (image.height, image.width)
+                src_masks = mask_generator.get_masks(image, int(index))
+                #print("index: ", index) 
+                
+
+            else:
+                src_masks = mask_generator.get_masks(image)
 
             filtered_image_mask_pairs = []
             for cur_mask in src_masks:
@@ -107,24 +131,26 @@ def main(args):
 
     in_files = list(glob.glob(os.path.join(args.indir, '**', f'*.{args.ext}'), recursive=True))
     if args.n_jobs == 0:
-        process_images(in_files, args.indir, args.outdir, config)
+        process_images(in_files, args.indir, args.outdir, config, args.rectangles)
     else:
         in_files_n = len(in_files)
         chunk_size = in_files_n // args.n_jobs + (1 if in_files_n % args.n_jobs > 0 else 0)
         Parallel(n_jobs=args.n_jobs)(
-            delayed(process_images)(in_files[start:start+chunk_size], args.indir, args.outdir, config)
+            delayed(process_images)(in_files[start:start+chunk_size], args.indir, args.outdir, config, args.rectangles)
             for start in range(0, len(in_files), chunk_size)
         )
 
 
 if __name__ == '__main__':
-    import argparse
-
+    import argparse    
     aparser = argparse.ArgumentParser()
     aparser.add_argument('config', type=str, help='Path to config for dataset generation')
     aparser.add_argument('indir', type=str, help='Path to folder with images')
     aparser.add_argument('outdir', type=str, help='Path to folder to store aligned images and masks to')
     aparser.add_argument('--n-jobs', type=int, default=0, help='How many processes to use')
     aparser.add_argument('--ext', type=str, default='png', help='Input image extension')
+    aparser.add_argument('--rectangles', type=str, help='Path to rectangles file (for fixed mask generator)')
 
     main(aparser.parse_args())
+
+#python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/val_source/ my_dataset/val/fixed.yaml --ext png --rectangles test.json
