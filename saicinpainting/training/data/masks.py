@@ -71,7 +71,7 @@ class RandomIrregularMaskGenerator:
                                           draw_method=self.draw_method)
 
 class FixedMaskGenerator:
-    def __init__(self, rectangles=None):
+    def __init__(self, rectangles):
         """
         Initializes the mask generator with a set of predefined rectangles.
 

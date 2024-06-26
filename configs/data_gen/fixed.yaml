@@ -2,6 +2,8 @@ generator_kind: fixed
 
 max_masks_per_image: 2
 
+mask_generator_kwargs:
+
 cropping:
   out_min_size: 512
   handle_small_mode: upscale

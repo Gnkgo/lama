@@ -79,7 +79,7 @@ def process_images(src_images, indir, outdir, config, rectangles):
                 # Extract the image shape and pass to the mask generator
                 #image_shape = (image.height, image.width)
                 src_masks = mask_generator.get_masks(image, int(index))
-                #print("index: ", index) 
+                print("index: ", index) 
                 
 
             else:
