@@ -6,6 +6,7 @@ from enum import Enum
 import json
 import cv2
 import numpy as np
+import os
 
 from saicinpainting.evaluation.masks.mask import SegmentationMask
 from saicinpainting.utils import LinearRamp
@@ -71,7 +72,7 @@ class RandomIrregularMaskGenerator:
                                           draw_method=self.draw_method)
 
 class FixedMaskGenerator:
-    def __init__(self, rectangles):
+    def __init__(self, rectangles = "find_nipples.json"):
         """
         Initializes the mask generator with a set of predefined rectangles.
 
@@ -82,6 +83,7 @@ class FixedMaskGenerator:
         try:
             with open(rectangles, 'r') as file:
                 self.rectangles = json.load(file)
+                
                 #print(f"Loaded {len(self.rectangles)} rectangles")
                 #print(self.rectangles["2636"])
         except FileNotFoundError:
@@ -99,7 +101,7 @@ class FixedMaskGenerator:
             self.rectangles[index] = []
         self.rectangles[index].append(rectangle)
 
-    def __call__(self, img, index):
+    def __call__(self, img, path, iter_i=None, raw_image=None):
         """
         Generates a mask based on the specified index and image shape.
 
@@ -116,6 +118,7 @@ class FixedMaskGenerator:
         # print("rectangles: ", self.rectangles)
         # print("index: ", index)
         # print("index in rectangles: ", str(index) in self.rectangles)
+        index = os.path.basename(path).split('.')[0]
         
         if str(index) in self.rectangles:
             return make_fixed_rectangle_mask(img.shape[1:], (self.rectangles[str(index)]))

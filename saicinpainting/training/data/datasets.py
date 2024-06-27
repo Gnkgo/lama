@@ -39,7 +39,11 @@ class InpaintingTrainDataset(Dataset):
         img = self.transform(image=img)['image']
         img = np.transpose(img, (2, 0, 1))
         # TODO: maybe generate mask before augmentations? slower, but better for segmentation-based masks
-        mask = self.mask_generator(img, iter_i=self.iter_i)
+        #what kind of mask_generator is this?
+        print("mask_generator, Inpainting Trainin Dataset", self.mask_generator)
+        LOGGER.info("mask_generator, Inpainting Trainin Dataset", self.mask_generator)
+
+        mask = self.mask_generator(img, path, iter_i=self.iter_i)
         self.iter_i += 1
         return dict(image=img,
                     mask=mask)
@@ -81,7 +85,7 @@ class ImgSegmentationDataset(Dataset):
         img = cv2.resize(img, (self.out_size, self.out_size))
         img = self.transform(image=img)['image']
         img = np.transpose(img, (2, 0, 1))
-        mask = self.mask_generator(img)
+        mask = self.mask_generator(img, path)
         segm, segm_classes= self.load_semantic_segm(path)
         result = dict(image=img,
                       mask=mask,
@@ -253,6 +257,8 @@ def make_default_val_dataset(indir, kind='default', out_size=512, transform_vari
         ])
 
     LOGGER.info(f'Make val dataloader {kind} from {indir}')
+    
+    
     mask_generator = get_mask_generator(kind=kwargs.get("mask_generator_kind"), kwargs=kwargs.get("mask_gen_kwargs"))
 
     if transform_variant is not None:

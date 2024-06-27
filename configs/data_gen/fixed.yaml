@@ -6,10 +6,10 @@ mask_generator_kwargs:
 
 cropping:
   out_min_size: 512
-  handle_small_mode: upscale
+  handle_small_mode: drop
   out_square_crop: False
   crop_min_overlap: 0
 
-max_tamper_area: 0.5
+max_tamper_area: 0
 
 

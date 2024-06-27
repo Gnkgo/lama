@@ -15,7 +15,7 @@ train:
   out_size: 256
 
   mask_gen_kwargs:  # probabilities do not need to sum to 1, they are re-normalized in mask generator
-    irregular_proba: 1
+    irregular_proba: 0
     irregular_kwargs:
       max_angle: 4
       max_len: 80  # math.sqrt(H*H+W*W) / 8 + math.sqrt(H*H+W*W) / 16 https://github.com/JiahuiYu/generative_inpainting/blob/master/inpaint_ops.py#L189

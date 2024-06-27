@@ -37,17 +37,17 @@ class MakeManyMasksWrapperFixed:
 
     
     
-def process_images(src_images, indir, outdir, config, rectangles):
-    if config.generator_kind == 'segmentation':
-        mask_generator = SegmentationMask(**config.mask_generator_kwargs)
-    elif config.generator_kind == 'random':
-        variants_n = config.mask_generator_kwargs.pop('variants_n', 2)
-        mask_generator = MakeManyMasksWrapper(MixedMaskGenerator(**config.mask_generator_kwargs),
-                                              variants_n=variants_n)
-    elif config.generator_kind == 'fixed':
-        mask_generator = MakeManyMasksWrapperFixed(FixedMaskGenerator(rectangles=rectangles))
-    else:
-        raise ValueError(f'Unexpected generator kind: {config.generator_kind}')
+def process_images(src_images, indir, outdir, config):
+    # if config.generator_kind == 'segmentation':
+    #     mask_generator = SegmentationMask(**config.mask_generator_kwargs)
+    # if config.generator_kind == 'random':
+    #     variants_n = config.mask_generator_kwargs.pop('variants_n', 2)
+    #     mask_generator = MakeManyMasksWrapper(MixedMaskGenerator(**config.mask_generator_kwargs),
+    #                                           variants_n=variants_n)
+    #if config.generator_kind == 'fixed' or config.generator_kind == 'segmentation':
+    mask_generator = MakeManyMasksWrapperFixed(FixedMaskGenerator())
+    # else:
+    #     raise ValueError(f'Unexpected generator kind: {config.generator_kind}')
 
     max_tamper_area = config.get('max_tamper_area', 1)
 
@@ -131,12 +131,12 @@ def main(args):
 
     in_files = list(glob.glob(os.path.join(args.indir, '**', f'*.{args.ext}'), recursive=True))
     if args.n_jobs == 0:
-        process_images(in_files, args.indir, args.outdir, config, args.rectangles)
+        process_images(in_files, args.indir, args.outdir, config)
     else:
         in_files_n = len(in_files)
         chunk_size = in_files_n // args.n_jobs + (1 if in_files_n % args.n_jobs > 0 else 0)
         Parallel(n_jobs=args.n_jobs)(
-            delayed(process_images)(in_files[start:start+chunk_size], args.indir, args.outdir, config, args.rectangles)
+            delayed(process_images)(in_files[start:start+chunk_size], args.indir, args.outdir, config)
             for start in range(0, len(in_files), chunk_size)
         )
 
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     aparser.add_argument('outdir', type=str, help='Path to folder to store aligned images and masks to')
     aparser.add_argument('--n-jobs', type=int, default=0, help='How many processes to use')
     aparser.add_argument('--ext', type=str, default='png', help='Input image extension')
-    aparser.add_argument('--rectangles', type=str, help='Path to rectangles file (for fixed mask generator)')
+    #aparser.add_argument('--rectangles', type=str, help='Path to rectangles file (for fixed mask generator)')
 
     main(aparser.parse_args())
 
