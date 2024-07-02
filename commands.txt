@@ -1,6 +1,6 @@
 export TORCH_HOME=$(pwd) && export PYTHONPATH=$(pwd)
 
-python3 bin/gen_mask_dataset.py $(pwd)/configs/data_gen/random_thin_512.yaml my_dataset/val_source/ my_dataset/val/random_thin_512.yaml --ext png
+python3 bin/gen_mask_dataset.py $(pwd)/configs/data_gen/random_thin_512.yaml my_dataset/val_source/ my_dataset/val/random_thin_512/ --ext png
 
 python3 bin/gen_mask_dataset.py $(pwd)/configs/data_gen/random_thin_512.yaml my_dataset/visual_test_source/ my_dataset/visual_test/random_thin_512/ --ext png
 
@@ -11,8 +11,8 @@ $env:TORCH_HOME = "C:\Users\Joanna Brodbeck\Documents\GitHub\lama"
 $env:PYTHONPATH = "C:\Users\Joanna Brodbeck\Documents\GitHub\lama"
 
 
-python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/val_source/ my_dataset/val/fixed.yaml --ext png --rectangles find_nipples.json
+python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/val_source/ my_dataset/val/fixed --ext png 
 
-python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/visual_test_source/ my_dataset/visual_test/fixed/ --ext png --rectangles find_nipples.json
+python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/visual_test_source/ my_dataset/visual_test/fixed/ --ext png 
 
-python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/eval_source/ my_dataset/eval/fixed/ --ext png --rectangles find_nipples.json
+python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/eval_source/ my_dataset/eval/fixed/ --ext png

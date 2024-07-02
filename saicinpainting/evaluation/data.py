@@ -154,6 +154,8 @@ class InpaintingEvalOnlineDataset(Dataset):
         return len(self.img_filenames)
 
     def __getitem__(self, i):
+        #print what kind of mask_generator it is
+        print("mask_generator: ", self.mask_generator)
         img, raw_image = load_image(self.img_filenames[i], mode='RGB', return_orig=True)
         mask = self.mask_generator(img, raw_image=raw_image)
         result = dict(image=img, mask=mask)

@@ -7,7 +7,9 @@ import json
 import cv2
 import numpy as np
 import os
+import PIL.Image as Image
 
+import matplotlib.pyplot as plt
 from saicinpainting.evaluation.masks.mask import SegmentationMask
 from saicinpainting.utils import LinearRamp
 
@@ -72,7 +74,7 @@ class RandomIrregularMaskGenerator:
                                           draw_method=self.draw_method)
 
 class FixedMaskGenerator:
-    def __init__(self, rectangles = "find_nipples.json"):
+    def __init__(self, mask_path = './masks'):
         """
         Initializes the mask generator with a set of predefined rectangles.
 
@@ -81,54 +83,30 @@ class FixedMaskGenerator:
                       Each rectangle is specified as (start_x, end_x, start_y, end_y).
         """
         try:
-            with open(rectangles, 'r') as file:
-                self.rectangles = json.load(file)
-                
+            self.mask_path = mask_path
+            print("mask_path: ", mask_path)
                 #print(f"Loaded {len(self.rectangles)} rectangles")
                 #print(self.rectangles["2636"])
         except FileNotFoundError:
-            raise ValueError(f"File {rectangles} not found")
+            raise ValueError("Path not found")
         
-    def add_rectangle(self, index, rectangle):
-        """
-        Adds a rectangle to a specific index.
-
-        Parameters:
-        - index: The index for which the rectangle should be added.
-        - rectangle: The rectangle specification (start_x, start_y, width, height).
-        """
-        if index not in self.rectangles:
-            self.rectangles[index] = []
-        self.rectangles[index].append(rectangle)
 
     def __call__(self, img, path, iter_i=None, raw_image=None):
-        """
-        Generates a mask based on the specified index and image shape.
-
-        Parameters:
-        - shape: Tuple (height, width) specifying the size of the mask.
-        - index: The index to retrieve specific rectangle specifications.
-
-        Returns:
-        - A mask array with specified rectangles for the given index.
-        """
-        
-        #print("index: ", index)
-        
-        # print("rectangles: ", self.rectangles)
-        # print("index: ", index)
-        # print("index in rectangles: ", str(index) in self.rectangles)
-        index = os.path.basename(path).split('.')[0]
-        
-        if str(index) in self.rectangles:
-            return make_fixed_rectangle_mask(img.shape[1:], (self.rectangles[str(index)]))
-        else:
-            #print("no index??????")
-            return np.zeros((1, img.shape[1], img.shape[2]), dtype=np.float32)  # Empty mask if no rectangles are defined for the index
+        try:
+            mask = make_fixed_rectangle_mask(img.shape[1:], path)
+            if mask is None:
+                print(f"------------------------Generated mask is None for index {path}")
+                return np.zeros((1, img.shape[1], img.shape[2]), dtype=np.float32)
+            
+            print("mask shape: ", mask.shape)
+            print("mask shape has at least one one", np.any(mask > 1))
+            return mask
+        except Exception as e:
+            print(f"Error in FixedMaskGenerator __call__: {e}")
+            return np.zeros((1, img.shape[1], img.shape[2]), dtype=np.float32)
 
 
-
-def make_fixed_rectangle_mask(shape, rectangles):
+def make_fixed_rectangle_mask(shape, mask_path):
     """
     Generate a mask with rectangles placed at specified locations.
 
@@ -140,14 +118,59 @@ def make_fixed_rectangle_mask(shape, rectangles):
     Returns:
     - A mask array with specified rectangles.
     """
-    height, width = shape
-    mask = np.zeros((height, width), dtype=np.float32)
-    for rect in rectangles:
-        start_x, end_x, start_y, end_y = rect
-        mask[start_y:end_y, start_x:end_x] = 1
+    index = os.path.basename(mask_path)
+    print("index_make_fixed_rectangle_mask: ", index)
+    
+    # Construct the full path to the mask
+    mask_file_path = os.path.join('./masks', f'{index}.png')
+    print("mask_file_path_at rectangleeeeeee: ", mask_file_path)
+    
+    print("it does exists", os.path.exists(mask_file_path))
+    
+    
+    
+    #check files in this folder
+    print("files in mask_path: ", os.listdir('./masks'))
+    
+    
+    if not os.path.exists(mask_file_path):
+        print("mask_file_path: ", mask_file_path)
         
-    #print("mask: ", mask)
-    return mask[None, ...] 
+        mask_image = Image.new('L', (shape[1], shape[0]), 0)
+        print("DIDNT FIND THE FILE")
+    else :
+    # Load the mask image
+        #before conversion
+        # Load and display the original mask image
+        mask_image = Image.open(mask_file_path)
+        # plt.imshow(mask_image)
+        # plt.title("Original Mask Image")
+        # plt.show()
+
+        # Convert the mask image to grayscale
+        mask_image = mask_image.convert('L')
+        mask_image = np.clip(mask_image, 0, 1)
+
+        # Display the grayscale mask image
+        # plt.imshow(mask_image, cmap='gray')
+        # plt.title("Grayscale Mask Image")
+        # plt.show()
+
+        # Convert to a numpy array
+        mask_array = np.array(mask_image)
+
+    
+    # Convert the image to a NumPy array
+    mask_array = np.array(mask_image)
+    
+    #if value is bigger than 1, set it to 1
+    # print("mask_array has one 1 in it: ", np.any(mask_array > 1))
+    
+    # Optionally, if you need to add an extra dimension (for example, a batch dimension)
+    mask_array = mask_array[None, ...]
+    # print("mask_array: ", mask_array.shape)
+    
+    return mask_array
 
     
 def make_random_rectangle_mask(shape, margin=10, bbox_min_size=30, bbox_max_size=100, min_times=0, max_times=3):
