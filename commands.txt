@@ -16,3 +16,5 @@ python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/val_source
 python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/visual_test_source/ my_dataset/visual_test/fixed/ --ext png 
 
 python bin/gen_mask_dataset.py configs/data_gen/fixed.yaml my_dataset/eval_source/ my_dataset/eval/fixed/ --ext png
+
+python bin/train.py -cn lama-fourier location=my_dataset data.batch_size=8

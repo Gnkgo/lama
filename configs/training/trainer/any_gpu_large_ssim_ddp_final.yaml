@@ -14,7 +14,7 @@ kwargs:
 #  precision: 16
 #  amp_backend: native
 #  amp_level: O1
-  # resume_from_checkpoint: path  # override via command line trainer.resume_from_checkpoint=path_to_checkpoint
+  resume_from_checkpoint: path  # override via command line trainer.resume_from_checkpoint=path_to_checkpoint
   terminate_on_nan: False
   # auto_scale_batch_size: True  # uncomment to find largest batch size
   check_val_every_n_epoch: 1

@@ -118,7 +118,7 @@ def make_fixed_rectangle_mask(shape, mask_path):
     Returns:
     - A mask array with specified rectangles.
     """
-    index = os.path.basename(mask_path)
+    index = os.path.basename(mask_path).split('.')[0]
     print("index_make_fixed_rectangle_mask: ", index)
     
     # Construct the full path to the mask

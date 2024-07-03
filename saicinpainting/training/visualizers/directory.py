@@ -26,6 +26,8 @@ class DirectoryVisualizer(BaseVisualizer):
                                                   rescale_keys=self.rescale_keys)
 
         vis_img = np.clip(vis_img * 255, 0, 255).astype('uint8')
+        
+        
 
         curoutdir = os.path.join(self.outdir, f'epoch{epoch_i:04d}{suffix}')
         os.makedirs(curoutdir, exist_ok=True)

@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from skimage import color
 from skimage.segmentation import mark_boundaries
-
+import matplotlib.pyplot as plt
 from . import colors
 
 COLORS, _ = colors.generate_colors(151) # 151 - max classes for semantic segmentation
@@ -25,6 +25,11 @@ def visualize_mask_and_images(images_dict: Dict[str, np.ndarray], keys: List[str
                               black_mask=False) -> np.ndarray:
     mask = images_dict['mask'] > 0.5
     result = []
+    
+    #show the mask 
+    
+    plt.imshow(mask[0])
+    plt.show()
     for i, k in enumerate(keys):
         img = images_dict[k]
         img = np.transpose(img, (1, 2, 0))

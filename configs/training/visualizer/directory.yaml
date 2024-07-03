@@ -1,6 +1,6 @@
 # @package _group_
 kind: directory
-outdir: samples
+outdir: /cluster/scratch/jbrodbec
 key_order:
   - image
   - predicted_image

@@ -45,22 +45,18 @@ class MakeManyMasksWrapperFixed:
         #     plt.imshow(self.impl(img, index)[0][i])
         #     plt.show()
         return [self.impl(img, index)[0]]
-
-
-
-    
     
 def process_images(src_images, indir, outdir, config):
-    if config.generator_kind == 'segmentation':
-        mask_generator = SegmentationMask(**config.mask_generator_kwargs)
-    if config.generator_kind == 'random':
-        variants_n = config.mask_generator_kwargs.pop('variants_n', 2)
-        mask_generator = MakeManyMasksWrapper(MixedMaskGenerator(**config.mask_generator_kwargs),
-                                              variants_n=variants_n)
-    if config.generator_kind == 'fixed' or config.generator_kind == 'segmentation':
-        mask_generator = MakeManyMasksWrapperFixed(FixedMaskGenerator())
-    else:
-        raise ValueError(f'Unexpected generator kind: {config.generator_kind}')
+    # if config.generator_kind == 'segmentation':
+    #     mask_generator = SegmentationMask(**config.mask_generator_kwargs)
+    # if config.generator_kind == 'random':
+    #     variants_n = config.mask_generator_kwargs.pop('variants_n', 2)
+    #     mask_generator = MakeManyMasksWrapper(MixedMaskGenerator(**config.mask_generator_kwargs),
+    #                                           variants_n=variants_n)
+    #if config.generator_kind == 'fixed' or config.generator_kind == 'segmentation':
+    mask_generator = MakeManyMasksWrapperFixed(FixedMaskGenerator())
+    # else:
+    #     raise ValueError(f'Unexpected generator kind: {config.generator_kind}')
 
     max_tamper_area = config.get('max_tamper_area', 1)
 
