@@ -10,6 +10,6 @@ cropping:
   out_square_crop: False
   crop_min_overlap: 0
 
-max_tamper_area: 0
+max_tamper_area: 1
 
 
