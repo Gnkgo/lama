@@ -3,6 +3,8 @@ import random
 import shutil
 from pathlib import Path
 
+print("imgaug successfully imported")
+    
 def create_directory(path):
     if not os.path.exists(path):
         os.makedirs(path)

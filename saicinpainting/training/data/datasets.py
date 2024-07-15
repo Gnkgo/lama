@@ -208,7 +208,7 @@ def get_transforms(transform_variant, out_size):
 
 
 def make_default_train_dataloader(indir, kind='default', out_size=512, mask_gen_kwargs=None, transform_variant='default',
-                                  mask_generator_kind="fixed", dataloader_kwargs=None, ddp_kwargs=None, **kwargs):
+                                  mask_generator_kind="mixed", dataloader_kwargs=None, ddp_kwargs=None, **kwargs):
     LOGGER.info(f'Make train dataloader {kind} from {indir}. Using mask generator={mask_generator_kind}')
 
     mask_generator = get_mask_generator(kind=mask_generator_kind, kwargs=mask_gen_kwargs)

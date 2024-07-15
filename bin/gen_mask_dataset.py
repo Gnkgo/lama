@@ -49,11 +49,11 @@ class MakeManyMasksWrapperFixed:
 def process_images(src_images, indir, outdir, config):
     if config.generator_kind == 'segmentation':
         mask_generator = SegmentationMask(**config.mask_generator_kwargs)
-    if config.generator_kind == 'random':
+    elif config.generator_kind == 'random':
         variants_n = config.mask_generator_kwargs.pop('variants_n', 2)
         mask_generator = MakeManyMasksWrapper(MixedMaskGenerator(**config.mask_generator_kwargs),
                                               variants_n=variants_n)
-    if config.generator_kind == 'fixed':
+    elif config.generator_kind == 'fixed':
         mask_generator = MakeManyMasksWrapperFixed(FixedMaskGenerator())
     else:
         raise ValueError(f'Unexpected generator kind: {config.generator_kind}')
