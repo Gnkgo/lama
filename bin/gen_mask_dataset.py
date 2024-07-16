@@ -47,6 +47,8 @@ class MakeManyMasksWrapperFixed:
         return [self.impl(img, index)[0]]
     
 def process_images(src_images, indir, outdir, config):
+    
+    print("config_generator_kind: ", config.generator_kind)
     if config.generator_kind == 'segmentation':
         mask_generator = SegmentationMask(**config.mask_generator_kwargs)
     elif config.generator_kind == 'random':
@@ -84,7 +86,7 @@ def process_images(src_images, indir, outdir, config):
 
             # generate and select masks
             if config.generator_kind == 'fixed': 
-                # print("FIIIIIIIIIIIXEEEEEEEEEEEED")
+                print("FIIIIIIIIIIIXEEEEEEEEEEEED")
                 index = os.path.basename(infile).split('.')[0]
                 # print("index: process_image ", index)
                 # Extract the image shape and pass to the mask generator
@@ -98,7 +100,7 @@ def process_images(src_images, indir, outdir, config):
                 
 
             else:
-                # print("--------------noooooooooooooot fixeeeeeeed")
+                print("--------------noooooooooooooot fixeeeeeeed")
                 src_masks = mask_generator.get_masks(image)
             #show if src_mask has 1
             

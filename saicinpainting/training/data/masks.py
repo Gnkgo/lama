@@ -427,10 +427,12 @@ def get_mask_generator(kind, kwargs):
 
     if kind == "mixed":
         cl = MixedMaskGenerator
+        print("MixedMaskGenerator")
     elif kind == "outpainting":
         cl = OutpaintingMaskGenerator
     elif kind == "fixed":
         cl = FixedMaskGenerator
+        print("FixedMaskGenerator")
     elif kind == "dumb":
         cl = DumbAreaMaskGenerator
     else:
